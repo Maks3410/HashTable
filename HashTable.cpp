@@ -58,7 +58,6 @@ ostream &operator<<(ostream &os, const HashTable &table) {
             for (auto item : table.buckets[i].chain) {
                 os << item << " ";
             }
-
             os << endl;
         }
     }

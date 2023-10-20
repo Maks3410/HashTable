@@ -19,17 +19,15 @@ void FileManager::fillHashTable(HashTable &table) {
     long long int curShift = 0;
     while (obj.deserialize(input)) {
         table.insertElement(Item(obj.specializationCode, curShift));
-        curShift += (long long int)(streamoff(input.tellg()));
-        cout << curShift << endl;
+        curShift = (long long int)(input.tellg());
     }
 }
 
 Specialization FileManager::readOnShift(long long int shift) {
-    ifstream file(filepath, std::ios::binary);
+    ifstream file(filepath, ios::binary);
     Specialization obj;
-    file.seekg(shift);
+    file.seekg(shift, ios::beg);
     obj.deserialize(file);
-    cout << obj << endl;
     file.close();
     return obj;
 }

@@ -118,21 +118,21 @@ void test() {
 }
 
 void bigDataTest() {
-    FileManager fileManager("file1000.bin");
+    FileManager fileManager("big_input.bin");
     HashTable table;
     fileManager.fillHashTable(table);
 
 //    cout << table;
 
-    cout << table.elementsCount << endl;
-    cout << table.bucketsCount;
+//    cout << table.elementsCount << endl;
+//    cout << table.bucketsCount;
 
-    cout << "Searching in file by key 27686: ";
-    cout << findInFile(27686, table, fileManager) << endl;
+    cout << "Searching in file by key 18874390: ";
+    cout << findInFile(18874390, table, fileManager) << endl;
 }
 
 int main() {
-    FileManager::createBinaryFile("file1000.txt", "file1000.bin");
+//    FileManager::createBinaryFile("file1000.txt", "file1000.bin");
 //    testHashTable();
 //    testFileManager();
 //    test();
