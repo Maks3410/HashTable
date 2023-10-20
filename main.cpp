@@ -10,18 +10,20 @@
 using namespace std;
 
 
-class FileDoesntExistException{};
-
-void readAndInsert(int shift, HashTable table, FileManager manager) {
+void readAndInsert(int shift, HashTable &table, FileManager &manager) {
     table.insertElement(Item(manager.readOnShift(shift).specializationCode, shift));
 }
 
-void deleteByKey(int key, HashTable table, FileManager manager) {
-    table.deleteElementByKey(key);
-    manager.deleteOnShift(table.findElementByKey(key).shift);
+void deleteByKey(int key, HashTable &table, FileManager &manager) {
+    int shift = table.findElementByKey(key).shift;
+    if (shift != -1) {
+        manager.deleteOnShift(shift);
+        table.deleteElementByKey(key);
+    }
 }
 
-Specialization findInFile(int key, HashTable table, FileManager manager) {
+Specialization findInFile(int key, HashTable &table, FileManager &manager) {
+    cout << table.findElementByKey(key).shift << endl;
     return manager.readOnShift(table.findElementByKey(key).shift);
 }
 
@@ -55,13 +57,84 @@ void testHashTable() {
     cout << "New buckets number: " << table.bucketsCount << endl;
 
     cout << "Check elements after delete and resize:\n";
+    cout << table;
 }
 
 void testFileManager() {
+    cout << "Creating bin file from txt file (input.txt)\n";
+    FileManager::createBinaryFile("input.txt", "input.bin");
 
+    try {
+        cout << "Creating file manager on file abc.bin: ";
+        FileManager fileManager("abc.bin");
+    }
+    catch (string e) {
+        cout << e << endl;
+    }
+
+    try {
+        cout << "Creating file manager on file input.bin: ";
+        FileManager fileManager("input.bin");
+        cout << "File manager created\n";
+    }
+    catch (string e) {
+        cout << e << endl;
+    }
+
+    FileManager fileManager("input.bin");
+
+    cout << "Try read object on shift 0: " << fileManager.readOnShift(0) << endl;
+    cout << "Try read object on shift 14: " << fileManager.readOnShift(14) << endl;
+    cout << "Try read object on shift 50000: " << fileManager.readOnShift(50000) << endl;
+
+    cout << "Deleting element on shift 0\n";
+    fileManager.deleteOnShift(0);
+    cout << "Try read object on shift 0: " << fileManager.readOnShift(0) << endl;
+}
+
+void test() {
+    FileManager::createBinaryFile("input.txt", "input.bin");
+
+    FileManager fileManager("input.bin");
+    HashTable table;
+
+    fileManager.fillHashTable(table);
+    cout << table;
+
+    cout << "Searching in file by key 931: ";
+    cout << findInFile(931, table, fileManager) << endl;
+
+    cout << "Searching in file by key 22: ";
+    cout << findInFile(22, table, fileManager) << endl;
+
+    cout << "Try delete by key from table and from file:\n";
+    deleteByKey(1897, table, fileManager);
+
+    cout << "Searching in file by key 1897: ";
+    cout << findInFile(1897, table, fileManager) << endl;
+
+    cout << "Searching in hash table by key 1897: " << table.findElementByKey(1897) << endl;
+    cout << "Reading file on shift 0: " << fileManager.readOnShift(14) << endl;
+}
+
+void bigDataTest() {
+    FileManager fileManager("file1000.bin");
+    HashTable table;
+    fileManager.fillHashTable(table);
+
+//    cout << table;
+
+    cout << table.elementsCount << endl;
+    cout << table.bucketsCount;
+
+    cout << "Searching in file by key 27686: ";
+    cout << findInFile(27686, table, fileManager) << endl;
 }
 
 int main() {
-
-    testHashTable();
+    FileManager::createBinaryFile("file1000.txt", "file1000.bin");
+//    testHashTable();
+//    testFileManager();
+//    test();
+    bigDataTest();
 }

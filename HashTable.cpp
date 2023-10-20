@@ -59,7 +59,8 @@ ostream &operator<<(ostream &os, const HashTable &table) {
                 os << item << " ";
             }
 
-            std::cout << endl;
+            os << endl;
         }
     }
+    return os;
 }

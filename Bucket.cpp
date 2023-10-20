@@ -1,4 +1,5 @@
 #include "Bucket.h"
+#include <iostream>
 
 Bucket::Bucket() = default;
 
@@ -9,7 +10,7 @@ Bucket::Bucket(const Item& first) {
 bool Bucket::deleteElementByKey(int key) {
     int index = getIndexByKey(key);
     if (index != -1) {
-        chain.erase(next(chain.begin(), getIndexByKey(key)));
+        chain.erase(next(chain.begin(), index));
         return true;
     }
     return false;
@@ -21,14 +22,17 @@ void Bucket::insertElement(const Item& element) {
 
 Item Bucket::getElementByKey(int key) {
     int ind = getIndexByKey(key);
-    if (ind == -1) return {};
+    if (ind == -1) {
+        return {};
+    }
     return chain[ind];
 }
 
 int Bucket::getIndexByKey(int key) {
     for (int i = 0; i < chain.size(); ++i) {
-        if (chain[i].specializationCode == key)
+        if (chain[i].specializationCode == key) {
             return i;
+        }
     }
     return -1;
 }

@@ -10,13 +10,13 @@ class FileManager {
 private:
     string filepath = "C:/Users/Maxim/CLionProjects/siaod3/";
 public:
-    FileManager(string filename);
+    explicit FileManager(const string& filename);
 
-    void fillHashTable(HashTable table);
-    Specialization readOnShift(int shift);
+    void fillHashTable(HashTable &table);
+    Specialization readOnShift(long long int shift);
     static void createBinaryFile(const string& filepath_from, const string& filepath_to);
 
-    void deleteOnShift(int shift);
+    void deleteOnShift(long long int shift);
 };
 
 

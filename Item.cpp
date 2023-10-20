@@ -1,6 +1,6 @@
 #include "Item.h"
 
-Item::Item(int specializationCode, int shift) : specializationCode(specializationCode), shift(shift) {}
+Item::Item(int specializationCode, long long int shift) : specializationCode(specializationCode), shift(shift) {}
 
 Item::Item() {
     specializationCode = -1;

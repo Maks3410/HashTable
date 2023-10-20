@@ -7,9 +7,9 @@
 class Item {
 public:
     int specializationCode;
-    int shift;
+    long long int shift;
 
-    Item(int specializationCode, int shift);
+    Item(int specializationCode, long long int shift);
 
     Item();
 

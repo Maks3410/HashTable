@@ -3,37 +3,45 @@
 
 using namespace std;
 
-FileManager::FileManager(string filename) {
+FileManager::FileManager(const string& filename) {
     filepath += filename;
+    ifstream fin(filepath);
+    if (!fin.is_open()) {
+        throw string("No such file in directory");
+    }
+    fin.close();
 }
 
-void FileManager::fillHashTable(HashTable table) {
-    ifstream input(filepath);
+void FileManager::fillHashTable(HashTable &table) {
+    ifstream input(filepath, ios::binary);
     Specialization obj;
 
-    int curShift = 0;
+    long long int curShift = 0;
     while (obj.deserialize(input)) {
         table.insertElement(Item(obj.specializationCode, curShift));
-        curShift++;
+        curShift += (long long int)(streamoff(input.tellg()));
+        cout << curShift << endl;
     }
 }
 
-Specialization FileManager::readOnShift(int shift) {
-    ifstream file(filepath, std::ios::binary | std::ios::in | std::ios::out);
+Specialization FileManager::readOnShift(long long int shift) {
+    ifstream file(filepath, std::ios::binary);
     Specialization obj;
-    file.seekg(shift * sizeof(Specialization));
+    file.seekg(shift);
     obj.deserialize(file);
+    cout << obj << endl;
     file.close();
     return obj;
 }
 
 void FileManager::createBinaryFile(const string& filepath_from, const string& filepath_to) {
-    ifstream fin(filepath_from, ios::binary);
-    ofstream fout(filepath_to, ios::binary);
-    int n;
+    ifstream fin("C:/Users/Maxim/CLionProjects/siaod3/" + filepath_from);
+    ofstream fout("C:/Users/Maxim/CLionProjects/siaod3/" + filepath_to, ios::binary);
+    int n, cnt;
     string s;
     Specialization t;
-    while (!fin.eof()) {
+    fin >> cnt;
+    for (int i = 0; i < cnt; ++i) {
         fin >> n >> s;
         Specialization(n, s).serialize(fout);
     }
@@ -41,7 +49,7 @@ void FileManager::createBinaryFile(const string& filepath_from, const string& fi
     fout.close();
 }
 
-void FileManager::deleteOnShift(int shift) {
+void FileManager::deleteOnShift(long long int shift) {
     string tempname = "C:/Users/Maxim/CLionProjects/siaod3/temp.bin";
 
     ifstream input(filepath, ios::binary);
