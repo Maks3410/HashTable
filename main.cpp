@@ -15,7 +15,7 @@ void readAndInsert(int shift, HashTable &table, FileManager &manager) {
 }
 
 void deleteByKey(int key, HashTable &table, FileManager &manager) {
-    int shift = table.findElementByKey(key).shift;
+    long long int shift = table.findElementByKey(key).shift;
     if (shift != -1) {
         manager.deleteOnShift(shift);
         table.deleteElementByKey(key);
@@ -23,7 +23,6 @@ void deleteByKey(int key, HashTable &table, FileManager &manager) {
 }
 
 Specialization findInFile(int key, HashTable &table, FileManager &manager) {
-    cout << table.findElementByKey(key).shift << endl;
     return manager.readOnShift(table.findElementByKey(key).shift);
 }
 
@@ -118,23 +117,72 @@ void test() {
 }
 
 void bigDataTest() {
+    FileManager::createBinaryFile("file1000000.txt", "big_input.bin");
+    cout << "Create hash table for 1000000 elements:\n";
     FileManager fileManager("big_input.bin");
     HashTable table;
     fileManager.fillHashTable(table);
 
-//    cout << table;
-
-//    cout << table.elementsCount << endl;
-//    cout << table.bucketsCount;
+    cout << "Elements count: " << table.elementsCount << endl;
+    cout << "Buckets count: " << table.bucketsCount << endl;
 
     cout << "Searching in file by key 18874390: ";
     cout << findInFile(18874390, table, fileManager) << endl;
+
+    cout << "Try read object on shift 0: " << fileManager.readOnShift(0) << endl;
+    cout << "Deleting first element:\n";
+    deleteByKey(75497473, table, fileManager);
+    cout << "Try read object on shift 0: " << fileManager.readOnShift(0) << endl;
+    cout << "Searching in file by key 75497473: ";
+    cout << findInFile(75497473, table, fileManager) << endl;
+
+}
+
+void userTest() {
+    string filename;
+    cout << "Input text file name:\n";
+    cin >> filename;
+    int key, q;
+    HashTable table;
+    FileManager::createBinaryFile(filename, "input.bin");
+    FileManager fileManager("input.bin");
+    fileManager.fillHashTable(table);
+    while (true) {
+        cout << "1: Find in file by key\n"
+                "2: Delete from file and hash table\n"
+                "3: Exit\n";
+        cin >> q;
+        switch (q) {
+            case 1: {
+                cout << "Input key:\n";
+                cin >> key;
+                cout << "Searching in file by key " << key << ": ";
+                cout << findInFile(key, table, fileManager) << endl;
+                break;
+            }
+            case 2: {
+                cout << "Input key:\n";
+                cin >> key;
+                cout << "Deleting by key " << key << ": ";
+                deleteByKey(key, table, fileManager);
+                break;
+            }
+            case 3: {
+                return;
+            }
+            default: {
+                cout << "Invalid command\n";
+                break;
+            }
+        }
+
+    }
 }
 
 int main() {
-//    FileManager::createBinaryFile("file1000.txt", "file1000.bin");
 //    testHashTable();
 //    testFileManager();
 //    test();
     bigDataTest();
+//    userTest();
 }
